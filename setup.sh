@@ -67,6 +67,7 @@ fi
 cd "$SCRIPT_ROOT"
 
 # Create python environment
+eval $(conda shell.bash hook)
 if [[ ! -r "$pyPath" ]]; then
     conda create -y -p "$pyEnv" python=3.8
     conda activate "$pyEnv"
