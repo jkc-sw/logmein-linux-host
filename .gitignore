@@ -12,3 +12,9 @@ parts/
 stage/
 .snapcraft/
 node_modules
+.env
+build
+.yarn
+.yarnrc.yml
+*.egg-info
+stop.sh
