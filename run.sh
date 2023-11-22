@@ -125,24 +125,26 @@ fi
 # Get node path
 nodePath="$(command -v node)"
 
+# runas doas or sudo
+runAs=sudo
+if command -v doas &>/dev/null; then
+    runAs=doas
+fi
+
 # Start the applications
 # petty
-doas "$pyPath" "$SCRIPT_ROOT/pytty/pytty.py" &  # "--port=$TERM_PORT" &
-job1="$!"
+"$runAs" "$pyPath" "$SCRIPT_ROOT/pytty/pytty.py" &  # "--port=$TERM_PORT" &
 # wetty
 pushd "$reverseProxyDir" || exit 1
-doas "$nodePath" "$reverseProxyDir/node_modules/wetty/index.js" --port 23822 --title LogMeIn --base /xterm/ --host 127.0.0.1 --forcessh &
-job2="$!"
+"$runAs" "$nodePath" "$reverseProxyDir/node_modules/wetty/index.js" --port 23822 --title LogMeIn --base /xterm/ --host 127.0.0.1 --forcessh &
 popd || exit 1
 # reverse-proxy
 pushd "$reverseProxyDir" || exit 1
-doas "$nodePath" "$reverseProxyDir/app.js" &
-job3="$!"
+"$runAs" "$nodePath" "$reverseProxyDir/app.js" &
 popd || exit 1
 # Logmein host
-doas "$pyPath" "$SCRIPT_ROOT/logmein_host/logmein_host.py" &
-job4="$!"
+"$runAs" "$pyPath" "$SCRIPT_ROOT/logmein_host/logmein_host.py" &
 
 # Create a command to stop
-echo "doas kill -9 $job1 $job2 $job3 $job4" > "$stopScript"
+echo "ps -aux | grep -v grep | grep -E '$SCRIPT_ROOT/pytty/pytty.py|$reverseProxyDir/node_modules/wetty/index.js|$reverseProxyDir|$SCRIPT_ROOT/logmein_host/logmein_host.py' | sed 's/^ *//' | awk '{print \$2}' | '$runAs' xargs kill -9" > "$stopScript"
 chmod +x "$stopScript"
