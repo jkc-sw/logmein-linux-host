@@ -1,5 +1,5 @@
 name: logmein-host
-version: '1.1.1'
+version: '1.2.0'
 summary: The LogMeIn Host Software (Beta) for Linux # 79 char long summary
 icon: snap/gui/icon.png
 base: core18
@@ -9,6 +9,10 @@ description: |-
  You can connect to a Linux host, in an web-based secure shell and it allows you to send commands to the host computer.
 
  For more information on LogMeIn for Linux and how to attach your host to your account, try the developer website.
+
+ Other contributions:
+ - Added the prompt to ask for ssh port when terminal is requested. Edited by Jerry
+ - Bump the nodejs version to 16.19.1 (LTS). Edited by Jerry
 
 grade: stable # must be 'stable' to release into candidate/stable channels
 confinement: strict # use 'strict' once you have the right plugs and slots
@@ -22,7 +26,7 @@ parts:
   reverse-proxy:
     source: reverse-proxy/
     plugin: nodejs
-    nodejs-version: 8.17.0
+    nodejs-version: 16.19.1
     nodejs-package-manager: yarn
     build-environment:
       - npm_config_unsafe_perm: 'true'
